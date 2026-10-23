@@ -6,14 +6,26 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CNA_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../cna"
+# A sibling ../cna checkout wins. Without one, fall back to the github.com/<org>/<repo>
+# layout, where this repository sits in libcnalab/ and CNA in libcna/. The path is
+# normalized so the cached value names the checkout itself, not a route through '..'.
+set(_wolf_default_cna_root "${CMAKE_CURRENT_SOURCE_DIR}/../cna")
+if(NOT EXISTS "${_wolf_default_cna_root}/CMakeLists.txt"
+   AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../libcna/cna/CMakeLists.txt")
+    set(_wolf_default_cna_root "${CMAKE_CURRENT_SOURCE_DIR}/../../libcna/cna")
+endif()
+get_filename_component(_wolf_default_cna_root "${_wolf_default_cna_root}" ABSOLUTE)
+
+set(CNA_ROOT "${_wolf_default_cna_root}"
     CACHE PATH "Path to the CNA checkout")
 
 if(NOT EXISTS "${CNA_ROOT}/CMakeLists.txt")
     message(FATAL_ERROR
-        "wolf-cna: CNA checkout not found at '${CNA_ROOT}'. "
+        "wolf-cna: CNA checkout not found at '${CNA_ROOT}' "
+        "(looked for ../cna, then ../../libcna/cna). "
         "Set -DCNA_ROOT=/path/to/cna.")
 endif()
+message(STATUS "wolf-cna: CNA at ${CNA_ROOT}")
 
 if(NOT DEFINED CNA_GRAPHICS_RENDERER)
     if(EMSCRIPTEN)

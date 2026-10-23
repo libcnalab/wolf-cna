@@ -227,6 +227,18 @@ development/
 
 CNA itself expects `sharp-runtime` next to the CNA checkout.
 
+When there is no sibling `cna/`, CMake falls back to the GitHub organization
+layout, where this repository lives in `libcnalab/` and CNA in `libcna/`:
+
+```text
+github.com/
+  libcna/
+    cna/
+    sharp-runtime/
+  libcnalab/
+    wolf-cna/
+```
+
 If your CNA checkout has another name/location, pass it explicitly:
 
 ```bash

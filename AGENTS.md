@@ -23,6 +23,9 @@ Default sibling layout:
 ./wolf-cna
 ```
 
+Without `../cna`, CMake falls back to `../../libcna/cna` (with its sibling
+`../../libcna/sharp-runtime`).
+
 Configure:
 
 ```bash
